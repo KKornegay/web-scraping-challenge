@@ -4,6 +4,7 @@ from splinter import Browser
 from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+import pandas as pd
 
 #create function to initalize browser
 def init_browser():
@@ -49,5 +50,32 @@ def scrape():
 #define feature image url
     featured_image_url = "https://www.jpl.nasa.gov" + image_soup[0]["href"]
 
+#read mars table and convert to html
+    mars_df = pd.read_html("https://space-facts.com/mars/")
+    mars_html_table = mars_df[0].to_html()
 
+#another url to be scraped    
+    url2 = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
+    browser.visit(url2)
+    links=browser.links.find_by_partial_text("Hemisphere Enhanced")
+    hemisphere_image_urls= []
 
+#create loop to repeat scrape    
+    for l in range(len(links)):
+        browser.links.find_by_partial_text("Hemisphere Enhanced")[l].click()
+        time.sleep(2)
+        html = browser.html
+        soup = bs(html, 'html.parser')
+        downloads = soup.find_all("div", class_= "downloads")
+        figure= downloads[0]
+        pic_soup = figure.find_all("a", href = True)
+        hemisphere={}
+        hemisphere["img_url"]= pic_soup[0]["href"]
+        titles = soup.find_all("h2", class_= "title")
+        title= titles[0]
+        hemisphere["title"]= title.get_text()
+        hemisphere_image_urls.append(hemisphere)
+        browser.back()
+
+#close browser
+    browser.quit()
