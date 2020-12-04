@@ -20,7 +20,7 @@ def index():
     
 
 @app.route("/scrape")
-def scrape():
+def mars_scrape():
 
     # Run the scrape function for Mars news and facts
     mars_data = scrape_mars.scrape()

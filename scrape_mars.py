@@ -12,6 +12,7 @@ def init_browser():
     browser = Browser('chrome', **executable_path, headless=False)
 
 def scrape():
+#open browser
     browser = init_browser()
 
 #url to be scraped
@@ -32,14 +33,25 @@ def scrape():
     mars_soup_paragraph = soup.find_all("div", class_= "article_teaser_body")
     paragraph = mars_soup_paragraph[0].get_text()
 
+#quit browser
+    browser.quit()
+
+#open browser
+    browser = init_browser()
+
 #next url to be scraped
-    url1 = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
-    browser.visit(url1)
+    url = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
+    browser.visit(url)
     time.sleep(2)
 
+# Scrape page into Soup
+    html = browser.html
+    soup = bs(html, "html.parser")
+    
 #find and click links
     browser.links.find_by_partial_text("FULL IMAGE")[0].click()
     browser.links.find_by_partial_text("more info")[0].click()
+
 
 #use text under figure to find image
     text_soup = soup.find_all("figure", class_= "lede")
@@ -50,13 +62,26 @@ def scrape():
 #define feature image url
     featured_image_url = "https://www.jpl.nasa.gov" + image_soup[0]["href"]
 
+#quit browser
+    browser.quit()
+
+
+#open browser
+    browser = init_browser()
+
 #read mars table and convert to html
     mars_df = pd.read_html("https://space-facts.com/mars/")
     mars_html_table = mars_df[0].to_html()
 
+#quit browser
+    browser.quit()
+
+#open browser
+    browser = init_browser()
+
 #another url to be scraped    
-    url2 = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
-    browser.visit(url2)
+    url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
+    browser.visit(url)
     links=browser.links.find_by_partial_text("Hemisphere Enhanced")
     hemisphere_image_urls = []
 
@@ -92,6 +117,6 @@ def scrape():
 
     return mars_data
 
-if __name__ == "__main__":
-    data = scrape()
-    print(data)
+#if __name__ == "__main__":
+    #data = scrape()
+    #print(data)
