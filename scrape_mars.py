@@ -26,11 +26,11 @@ def scrape():
 
 #find title
     mars_soup_title = soup.find_all("div", class_= "content_title")    
-    title= mars_soup_title[1].get_text()
+    title = mars_soup_title[1].get_text()
 
 #find paragraph
     mars_soup_paragraph = soup.find_all("div", class_= "article_teaser_body")
-    paragraph= mars_soup_paragraph[0].get_text()
+    paragraph = mars_soup_paragraph[0].get_text()
 
 #next url to be scraped
     url1 = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
@@ -58,7 +58,7 @@ def scrape():
     url2 = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
     browser.visit(url2)
     links=browser.links.find_by_partial_text("Hemisphere Enhanced")
-    hemisphere_image_urls= []
+    hemisphere_image_urls = []
 
 #create loop to repeat scrape    
     for l in range(len(links)):
@@ -79,3 +79,19 @@ def scrape():
 
 #close browser
     browser.quit()
+
+#add everything to dictionary
+    mars_data = {
+        "Mars_News_Headline": title,
+        "Mars_News_Article": paragraph,
+        "Mars_Featured_Image": featured_image_url,
+        "Mars_Facts": mars_html_table,
+        "Mars_Hemisphere": hemisphere_image_urls
+
+    }
+
+    return mars_data
+
+if __name__ == "__main__":
+    data = scrape()
+    print(data)
