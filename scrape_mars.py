@@ -9,7 +9,7 @@ import pandas as pd
 #create function to initalize browser
 def init_browser():
     executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
+    return Browser('chrome', **executable_path, headless=False)
 
 def scrape():
 #open browser
@@ -55,7 +55,7 @@ def scrape():
 
 #use text under figure to find image
     text_soup = soup.find_all("figure", class_= "lede")
-    figure= text_soup[0]
+    figure = text_soup[0]
     image_soup = figure.find_all("a", href = True)
     image_soup[0]["href"]
 
