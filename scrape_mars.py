@@ -44,17 +44,22 @@ def scrape():
     browser.visit(url)
     time.sleep(2)
 
-# Scrape page into Soup
-    html = browser.html
-    soup = bs(html, "html.parser")
+# # Scrape page into Soup
+#     html = browser.html
+#     soup = bs(html, "html.parser")
     
 #find and click links
     browser.links.find_by_partial_text("FULL IMAGE")[0].click()
+    time.sleep(5)
     browser.links.find_by_partial_text("more info")[0].click()
+    time.sleep(5)
 
-
+# Scrape page into Soup
+    html = browser.html
+    soup = bs(html, "html.parser")
 #use text under figure to find image
     text_soup = soup.find_all("figure", class_= "lede")
+    #print(text_soup)
     figure = text_soup[0]
     image_soup = figure.find_all("a", href = True)
     image_soup[0]["href"]
@@ -107,7 +112,7 @@ def scrape():
 
 #add everything to dictionary
     mars_data = {
-        "Mars_News_Headline": title,
+        "Mars_News_Headline": title.get_text(),
         "Mars_News_Article": paragraph,
         "Mars_Featured_Image": featured_image_url,
         "Mars_Facts": mars_html_table,
